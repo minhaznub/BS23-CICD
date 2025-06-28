@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*.log
+.env
+*.env
+.DS_Store
+.git
+.dockerignore
+docker-compose.yml
