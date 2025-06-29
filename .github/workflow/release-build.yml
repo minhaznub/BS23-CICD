@@ -1,8 +1,8 @@
-name: CI-Build & Push
+name: Build & Docker Push
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   release:
     types: [created]
 
@@ -34,10 +34,10 @@ jobs:
       run: |
         FILE_VERSION=$(cat version.txt)
         if [ "$FILE_VERSION" != "$RELEASE_VERSION" ]; then
-          echo "❌ version.txt ($FILE_VERSION) does not match release version ($RELEASE_VERSION)"
+          echo "version.txt ($FILE_VERSION) does not match release version ($RELEASE_VERSION)"
           exit 1
         fi
-        echo "✅ version.txt matches release version"
+        echo "version.txt matches release version"
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
