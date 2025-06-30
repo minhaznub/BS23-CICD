@@ -1,4 +1,4 @@
-name: Deploy to AKS
+name: Deploy app to AKS
 
 on:
   workflow_dispatch:
@@ -13,11 +13,27 @@ jobs:
     - name: Configure kubectl
       run: |
         echo "${{ secrets.AZURE_KUBECONFIG_B64 }}" | base64 -d > kubeconfig.yaml
-        export KUBECONFIG=$PWD/kubeconfig.yaml
+        echo "KUBECONFIG=$PWD/kubeconfig.yaml" >> $GITHUB_ENV
 
-    - name: Patch image version
+    - name: Get latest release tag
+      id: get_release
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const release = await github.rest.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+          core.setOutput("tag", release.data.tag_name);
+
+    - name: Print release version
+      run: echo "Latest release: ${{ steps.get_release.outputs.tag }}"
+
+    - name: Patch deployment.yaml with latest image tag
       run: |
-        sed -i "s|image: .*|image: minhajulcse7/weatherapp:${{ github.ref_name }}|" k8s_manifest/deployment.yaml
+        echo "Replacing image tag with: ${{ steps.get_release.outputs.tag }}"
+        sed -i "s|image: .*|image: minhajulcse7/weatherapp:${{ steps.get_release.outputs.tag }}|" k8s_manifest/deployment.yaml
 
-    - name: Deploy
-      run: kubectl apply -f k8s_manifest/
+    - name: Deploy to AKS
+      run: |
+        kubectl apply -f k8s_manifest/
