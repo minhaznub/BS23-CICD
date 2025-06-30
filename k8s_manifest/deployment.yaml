@@ -2,8 +2,15 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-api
+  labels:
+    app: flask-api
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: flask-api
@@ -14,11 +21,6 @@ spec:
     spec:
       containers:
         - name: flask-api
-          image: minhajulcse7/weatherapp:v1.0.6
+          image: minhajulcse7/weatherapp:latest  # will be patched in workflow
           ports:
             - containerPort: 5000
-          envFrom:
-            - configMapRef:
-                name: flask-config
-            - secretRef:
-                name: flask-secrets

@@ -38,3 +38,7 @@ jobs:
       - name: Deploy to AKS
         run: |
           kubectl apply -f k8s_manifest/
+
+      - name: Wait for rollout to complete
+        run: |
+          kubectl rollout status deployment/flask-api
