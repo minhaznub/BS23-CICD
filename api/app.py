@@ -2,8 +2,13 @@ from flask import Flask, jsonify
 from datetime import datetime
 import socket
 from weather import get_weather
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+
+# Enable Prometheus metrics collection
+metrics = PrometheusMetrics(app)
+metrics.info('flask_app_info', 'Flask Weather App')
 
 def read_version():
     with open("version.txt", "r") as f:
