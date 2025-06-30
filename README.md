@@ -4,8 +4,6 @@
 This project builds the API app Docker image, pushes it to Docker Hub, and provisions the AKS cluster infrastructure using a fully automated Terraform pipeline. It deploys the app in the AKS cluster and sets up Grafana and Prometheus for observability through an automated pipeline.
 
 ---
-## Project Structure
-
 
 ## 🚀 Release & Deploy Workflow
 set the folling secrets in github project 
