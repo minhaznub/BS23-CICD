@@ -1,0 +1,52 @@
+name: Deploy Observability Stack
+
+on:
+  workflow_dispatch:  # manually triggered
+
+jobs:
+  deploy:
+    name: Apply Observability Manifests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up KUBECONFIG
+      run: |
+        echo "${{ secrets.AZURE_KUBECONFIG_B64 }}" | base64 -d > kubeconfig.yaml
+        echo "KUBECONFIG=$PWD/kubeconfig.yaml" >> $GITHUB_ENV
+
+    - name: Apply Namespace
+      run: |
+        kubectl apply -f k8s_manifest/observability/namespace.yaml
+
+    - name: Deploy Prometheus
+      run: |
+        kubectl apply -f k8s_manifest/observability/prometheus/
+
+    - name: Deploy Grafana
+      run: |
+        kubectl apply -f k8s_manifest/observability/grafana/
+
+    - name: Deploy Loki
+      run: |
+        kubectl apply -f k8s_manifest/observability/loki/
+
+    - name: Deploy Promtail
+      run: |
+        kubectl apply -f k8s_manifest/observability/promtail/
+
+    - name: Wait for Grafana External IP
+      run: |
+        for i in {1..20}; do
+          IP=$(kubectl get svc grafana-service -n observability -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [[ -n "$IP" ]]; then
+            echo "Grafana is available at: http://$IP" >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+          echo "Waiting for external IP..."
+          sleep 10
+        done
+        echo "Grafana service external IP not ready" >> $GITHUB_STEP_SUMMARY
+        exit 1

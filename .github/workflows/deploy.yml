@@ -1,0 +1,23 @@
+name: Deploy to AKS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure kubectl
+      run: |
+        echo "${{ secrets.AZURE_KUBECONFIG_B64 }}" | base64 -d > kubeconfig.yaml
+        export KUBECONFIG=$PWD/kubeconfig.yaml
+
+    - name: Patch image version
+      run: |
+        sed -i "s|image: .*|image: minhajulcse7/weatherapp:${{ github.ref_name }}|" k8s_manifest/deployment.yaml
+
+    - name: Deploy
+      run: kubectl apply -f k8s_manifest/
