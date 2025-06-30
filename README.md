@@ -1,7 +1,7 @@
 
 # Weather api app on AKS with CI/CD and Observability
 
-This project build the api app docker image and push in docker hub and provisining the AKS cluster infrastructure using fully automated **terraform** pipeline for , deploy the app in the aks cluster and with automated pipeline and deploy **Grafana + Prometheus** for observability.
+This project builds the API app Docker image, pushes it to Docker Hub, and provisions the AKS cluster infrastructure using a fully automated Terraform pipeline. It deploys the app in the AKS cluster and sets up Grafana and Prometheus for observability through an automated pipeline.
 
 ---
 ## Project Structure
@@ -14,7 +14,7 @@ set the folling secrets in github project
 ### 🔁 Step 1: Create a New Release (e.g. `v1.0.9`)
 
 1. Push your latest changes (including updated `version.txt`) to `main`
-2. Go to [Releases](https://github.com/<your-username>/<your-repo>/releases)
+2. Go to [Releases](https://github.com/minhaznub/BS23-CICD/releases)
 3. Click **"Draft a new release"**
 4. Tag version: `v1.0.9`
 5. Release title: `v1.0.9`
@@ -32,11 +32,14 @@ set the folling secrets in github project
 This creates the AKS cluster and required network using Terraform.
 
 1. Go to GitHub Actions → Run workflow: **"Terraform AKS Infrastructure"**
+see the old run here: https://github.com/minhaznub/BS23-CICD/actions/runs/15968550919
 2. Input `action = apply` and click **Run**
 3. Terraform provisions:
    - Resource Group
    - AKS Cluster
    - Networking
+
+Deprovision the infra with selecting "destroy" when done with the testing ![alt text]({713B78EC-DE35-43BC-9EBD-D84592CD27EB}.png)
 
 Secrets needed:
 - `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_SUBSCRIPTION_ID`, `ARM_TENANT_ID`
@@ -46,6 +49,7 @@ Secrets needed:
 ### 🐳 Step 3: Deploy the App to AKS
 
 1. Run the GitHub Actions workflow: **"Deploy app to AKS"**
+workflow run: https://github.com/minhaznub/BS23-CICD/actions/workflows/deploy-app.yml
 2. The workflow will:
    - Fetch the latest release tag (`v1.0.9`)
    - Patch `deployment.yaml` with the correct image tag
