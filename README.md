@@ -13,12 +13,12 @@ set the folling secrets in github project
 
 ### 🔁 Step 1: Create a New Release (e.g. `v1.0.9`)
 
-1. Push your latest changes (including updated `version.txt`) to `main`
-2. Go to [Releases](https://github.com/minhaznub/BS23-CICD/releases)
-3. Click **"Draft a new release"**
-4. Tag version: `v1.0.9`
-5. Release title: `v1.0.9`
-6. Click **"Publish release"**
+1. Clone the repo and Push your latest changes to your repo (including updated `version.txt`) to `main`
+    Example: [Releases](https://github.com/minhaznub/BS23-CICD/releases)
+2. Click **"Draft a new release"**
+3. Tag version: `v1.0.9`
+4. Release title: `v1.0.9`
+5. Click **"Publish release"**
 
 > ✅ This triggers a GitHub Actions "Build & Docker Push" workflow that: 
 > - Builds and tags the Docker image
