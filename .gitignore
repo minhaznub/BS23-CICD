@@ -1,0 +1,13 @@
+# Terraform
+aks-cluster/.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+crash.log
+*.log
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
